@@ -4,22 +4,16 @@
   <meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8">
 </head>
  	<body>
-<!--    <form method="post" action="check.php">-->
-<!--      <select name="website_string">-->
-<!--          <option value="" selected="selected"></option>-->
-<!--          <option VALUE="abc"> ABC</option>-->
-<!--          <option VALUE="def"> def</option>-->
-<!--          <option VALUE="hij"> hij</option>-->
-<!--      </select>-->
-<!--      <input TYPE="submit" name="submit" />-->
-<!--    </form>-->
-    <h1>My forum</h1>
-    <div id="wrapper">
-        <div id="menu">
-            <a class="item" href="test_login.php">Home</a> -
-            <div id="userbar">
-                <div id="userbar">Hello Example. Not you? Log out.</div>
-            </div>
-            <div id="content">
+		<form id='login' action='login.php' method='post' accept-charset='UTF-8'>
+			<fieldset >
+				<legend>Login</legend>
+				<input type='hidden' name='submitted' id='submitted' value='1'/>
+				<label for='username' >UserName*:</label>
+				<input type='text' name='username' id='username'  maxlength="50" />
+				<label for='password' >Password*:</label>
+				<input type='password' name='password' id='password' maxlength="50" />
+				<input type='submit' name='Submit' value='Submit' />
+			</fieldset>
+		</form>
 	</body>
 </html>
