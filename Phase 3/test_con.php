@@ -67,5 +67,7 @@
         } catch(PDOException $e) {
             echo $e;
         }
+        
+        return $pdo;
     }
 ?>

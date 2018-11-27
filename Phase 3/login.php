@@ -1,7 +1,7 @@
 <?php
     include 'test_con.php';
 
-    connect();
+    $pdo = connect();
     
     if(empty($_POST['firstname'])) {
         $this->HandleError("First Name is empty!");
@@ -19,7 +19,7 @@
 
     // First and Last Name Query
     try {
-        $login_query = $test_pdo->prepare("SELECT user_id FROM user WHERE first_name = ? AND last_name = ?");
+        $login_query = $pdo->prepare("SELECT user_id FROM user WHERE first_name = ? AND last_name = ?");
         $login_query->bindParam(1, $firstname);
         $login_query->bindParam(2, $lastname);
         $login_query->execute();
@@ -27,11 +27,11 @@
     } catch(PDOException $e) {
         echo $e;
     }
-    
+
     // Check Both Queries
     if ($user_id == null) {
-        $this->HandleError("No User With This Name");
-        return false
+        echo "No User With This Name";
+        return false;
     }
     else {
         echo "WORKED!";
