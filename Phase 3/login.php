@@ -17,20 +17,19 @@
     //echo $firstname;
     //echo $lastname;
 
-    // First Name Query
-    $username_query = $test_pdo->prepare("SELECT first_name FROM user WHERE first_name = ?");
-    $username_query->bindParam(1, $firstname);
-    $username_query->execute();
-    $first = $username_query->fetchColumn();
-    
-    // Last Name Query
-    $username_query = $test_pdo->prepare("SELECT first_name FROM user WHERE first_name = ?");
-    $username_query->bindParam(1, $firstname);
-    $username_query->execute();
-    $first = $username_query->fetchColumn();
+    // First and Last Name Query
+    try {
+        $login_query = $test_pdo->prepare("SELECT user_id FROM user WHERE first_name = ? AND last_name = ?");
+        $login_query->bindParam(1, $firstname);
+        $login_query->bindParam(2, $lastname);
+        $login_query->execute();
+        $user_id = $login_query->fetchColumn();
+    } catch(PDOException $e) {
+        echo $e;
+    }
     
     // Check Both Queries
-    if (first == null || last == null) {
+    if ($user_id == null) {
         $this->HandleError("No User With This Name");
         return false
     }
