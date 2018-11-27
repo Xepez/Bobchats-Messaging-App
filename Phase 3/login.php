@@ -1,14 +1,42 @@
 <?php
+    // Starts Sessions so we can pass variables
+    session_start();
+?>
+
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8">
+    </head>
+    <body>
+        <form id='login' action='login.php' method='post' accept-charset='UTF-8'>
+            <fieldset>
+                <legend>Bobchats Login</legend>
+                <input type='hidden' name='submitted' id='submitted' value='1'/>
+                <label for='firstname'>First Name:</label>
+                <input type='text' name='firstname' id='firstname'maxlength="50"/>
+                <label for='lastname'>Last Name:</label>
+                <input type='text' name='lastname' id='lastname' maxlength="50"/>
+                <input type='submit' name='Submit' value='Submit'/>
+            </fieldset>
+        </form>
+    </body>
+</html>
+
+<?php
+// Makes sure out html has run
+if(isset($_POST['Submit'])) {
     include 'test_con.php';
 
+    // Connects to the database
     $pdo = connect();
     
     if(empty($_POST['firstname'])) {
-        $this->HandleError("First Name is empty!");
+        echo "First Name is empty!";
         return false;
     }
     if(empty($_POST['lastname'])) {
-        $this->HandleError("Last Name is empty!");
+        echo "Last Name is empty!";
         return false;
     }
     $firstname = trim($_POST['firstname']);
@@ -34,7 +62,9 @@
         return false;
     }
     else {
-        echo "WORKED!";
+        $_SESSION['userID'] = $user_id;
+        $_SESSION['PDO'] = $pdo;
+        header('Location: message.php');
     }
-    
+}
 ?>
