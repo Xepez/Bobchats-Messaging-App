@@ -55,15 +55,15 @@ if(isset($_POST['Submit'])) {
     } catch(PDOException $e) {
         echo $e;
     }
-
-    // Check Both Queries
+    
+    // Check if there is a user with name that we entered
     if ($user_id == null) {
         echo "No User With This Name";
         return false;
     }
     else {
+        // If so save the id and open the message system
         $_SESSION['userID'] = $user_id;
-        $_SESSION['PDO'] = $pdo;
         header('Location: message.php');
     }
 }
