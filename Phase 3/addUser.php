@@ -54,7 +54,7 @@ if(isset($_POST['Submit'])) {
     
     // Inserts User to database
     try {
-        $login_insert = $pdo->prepare("INSERT INTO user (user_id, first_name, last_name) VALUES (?, ?, ?)");
+        $login_insert = $pdo->prepare('INSERT INTO user (user_id, first_name, last_name) VALUES (?, ?, ?)');
         
         if (!$login_insert) {
             echo "New User Insert Broke";

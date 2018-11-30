@@ -17,6 +17,11 @@ session_start();
                 <input type='submit' name='send' value='Send A Message'/>
                 <br>
                 <input type='submit' name='updateInfo' value='Update Info'/>
+                <?php
+                    if($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn' || $_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') {
+                        echo"<input type='submit' name='deleteUser' value='Delete Users'/>";
+                    }
+                ?>
                 <br>
                 <input type='submit' name='logout' value='Log Out'/>
             </fieldset>
@@ -37,5 +42,8 @@ session_start();
     }
     if(isset($_POST['logout'])) {
         header('Location: login.php');
+    }
+    if(isset($_POST['deleteUser'])) {
+        header('Location: deleteUser.php');
     }
 ?>

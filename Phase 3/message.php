@@ -31,9 +31,7 @@ session_start();
 // Makes sure out html has run
 if(isset($_POST['Submit'])) {
     include_once 'test_con.php';
-    include_once 'functions/draftMsg.php';
-    include_once 'functions/sendMsg.php';
-    
+
     // Catchs empty values
     if ($_POST['name'] == null && $_POST['group_name'] == null) {
         echo "Enter a user to send the message to!";
