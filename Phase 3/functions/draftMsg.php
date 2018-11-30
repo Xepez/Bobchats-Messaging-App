@@ -10,18 +10,7 @@
         echo "MsgID: " . $msg_id . " Subject: " . $subject . " Msg: " . $msg . " User ID: " . $user_id . " Rent Msg ID: " .  $parent_msg_id . " Attach ID: " . $attach_id;
         
         try {
-            $msg_insert = $pdo->prepare("INSERT INTO message (
-                                        msg_id,
-                                        subject,
-                                        message,
-                                        creator_id,
-                                        create_date,
-                                        parent_msg_id,
-                                        attach_id
-                                        ) VALUES (
-                                        ?, ?, ?, ?,
-                                        date('now'), ?, ? )"
-            );
+            $msg_insert = $pdo->prepare("INSERT INTO message (msg_id, subject, message, creator_id, create_date, parent_msg_id, attach_id) VALUES (?, ?, ?, ?, date('now'), ?, ? )");
             
             if (!$msg_insert) {
                 echo "Message Insert Broke!";

@@ -1,6 +1,5 @@
 <?php
-    // Starts Sessions so we can pass variables
-    session_start();
+session_start();
 ?>
 
 <html>

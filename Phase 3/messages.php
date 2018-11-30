@@ -1,6 +1,7 @@
 <?php
 session_start();
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,8 +54,8 @@ tr:nth-child(even) {
 // Echo session variables that were set on previous page
 //print_r($_SESSION);
 $user_id = $_SESSION['userID'];
-$firstname = $_SESSION['fname'];
-$lastname = $_SESSION['lname'];
+$firstname = $_SESSION['firstname'];
+$lastname = $_SESSION['lastname'];
 echo 'You are signed in as ' . $firstname .  ' ' . $lastname . '.';
 
 

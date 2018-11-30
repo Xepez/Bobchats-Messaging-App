@@ -1,6 +1,6 @@
 <?php
-    // Starts Sessions so we can pass variables
-    session_start();
+// Starts Sessions so we can pass variables
+session_start();
 ?>
 
 <html>
@@ -26,9 +26,9 @@
 </html>
 
 <?php
-// Makes sure out html has run
-if(isset($_POST['Submit']) or isset($_POST['new_user'])) {
-    include 'test_con.php';
+// Makes sure our html has run
+if(isset($_POST['Submit']) || isset($_POST['new_user'])) {
+    include_once 'test_con.php';
 
     if (isset($_POST['new_user'])) {
         // If the user needs to add their info to the db
@@ -72,7 +72,10 @@ if(isset($_POST['Submit']) or isset($_POST['new_user'])) {
     else {
         // If so save the id and open the message system
         $_SESSION['userID'] = $user_id;
-        header('Location: message.php');
+        $_SESSION['firstname'] = $firstname;
+        $_SESSION['lastname'] = $lastname;
+        
+        header('Location: home.php');
     }
 }
 ?>

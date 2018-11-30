@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <html>
     <head>
         <title></title>
@@ -19,9 +23,9 @@
 </html>
 
 <?php
-// Makes sure out html has run
+// Makes sure our html has run
 if(isset($_POST['Submit'])) {
-    include 'test_con.php';
+    include_once 'test_con.php';
     
     // Connects to the database
     $pdo = connect();
