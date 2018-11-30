@@ -34,7 +34,7 @@ session_start();
 
 <?php
 // Makes sure out html has run
-if(isset($_POST['Submit']) || isset($_POST['home']) || $_SESSION['reply'] == true) {
+if(isset($_POST['Submit']) || isset($_POST['home']) || /*$_SESSION['reply'] == true*/) {
     include_once 'test_con.php';
     
     if (isset($_POST['home']))
