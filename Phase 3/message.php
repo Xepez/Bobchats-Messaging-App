@@ -142,31 +142,19 @@ if(isset($_POST['Submit'])) {
     }
     
     // Drafts our message before sending it
-    //draftMsg($msg_id, $subject, $msg, $user_id, $parent_msg_id, $attach_id);
     try {
-        $msg_insert = $pdo->prepare("INSERT INTO message (
-                                    msg_id,
-                                    subject,
-                                    message,
-                                    creator_id,
-                                    create_date,
-                                    parent_msg_id,
-                                    attach_id
-                                    ) VALUES (
-                                              ?, ?, ?, ?,
-                                              date('now'), ?, ? )"
-        );
+        $msg_insert = $pdo->prepare('INSERT INTO message (msg_id, subject, message, creator_id, create_date, parent_msg_id, attach_id) VALUES (:mid, :sub, :msg, :uid, date("now"), :pmi, :ai)');
         
         if (!$msg_insert) {
             echo "Message Insert Broke!";
         }
         
-        $msg_insert->bindParam(1, $msg_id);
-        $msg_insert->bindParam(2, $subject);
-        $msg_insert->bindParam(3, $msg);
-        $msg_insert->bindParam(4, $user_id);
-        $msg_insert->bindParam(6, $parent_msg_id);
-        $msg_insert->bindParam(7, $attach_id);
+        $msg_insert->bindParam(':mid', $msg_id);
+        $msg_insert->bindParam(':sub', $subject);
+        $msg_insert->bindParam(':msg', $msg);
+        $msg_insert->bindParam(':uid', $user_id);
+        $msg_insert->bindParam(':pmi', $parent_msg_id);
+        $msg_insert->bindParam(':ai', $attach_id);
         
         $msg_insert->execute();
     } catch(PDOException $e) {
@@ -175,7 +163,31 @@ if(isset($_POST['Submit'])) {
     
     // If we are sending msg to a individual user
     if ($rec_id != null) {
-        sendMsg($rec_id, null, $msg_id);
+        
+        try {
+            $msg_r = $pdo->prepare("SELECT MAX(msg_rec_id) + 1 FROM msg_recipient");
+            $msg_r->execute();
+            $msg_rec_id = $msg_r->fetchColumn();
+        } catch(PDOException $e) {
+            echo $e;
+        }
+        
+        try {
+            $msg_send = $pdo->prepare('INSERT INTO msg_recipient (msg_rec_id, recipient_id, recipient_group_id, msg_id) VALUES (:mr, :mri, :gri, :mid)');
+            
+            if (!$msg_send) {
+                echo "Message Send Broke!";
+            }
+            
+            $msg_send->bindParam(':mr', $msg_rec_id);
+            $msg_send->bindParam(':mri', $rec_id);
+            $msg_send->bindParam(':gri', $group_rec_id);
+            $msg_send->bindParam(':mid', $msg_id);
+            
+            $msg_send->execute();
+        } catch(PDOException $e) {
+            echo $e;
+        }
     }
         
     /// If we are sending msg to a group of users
@@ -199,8 +211,31 @@ if(isset($_POST['Submit'])) {
         
         // For each member in a group
         while($grec_id != null) {
+
+            try {
+                $msg_r = $pdo->prepare("SELECT MAX(msg_rec_id) + 1 FROM msg_recipient");
+                $msg_r->execute();
+                $msg_rec_id = $msg_r->fetchColumn();
+            } catch(PDOException $e) {
+                echo $e;
+            }
             
-            sendMsg($grec_id, $group_rec_id, $msg_id);
+            try {
+                $msg_send = $pdo->prepare('INSERT INTO msg_recipient (msg_rec_id, recipient_id, recipient_group_id, msg_id) VALUES (:mr, :mri, :gri, :mid)');
+                
+                if (!$msg_send) {
+                    echo "Message Send Broke!";
+                }
+                
+                $msg_send->bindParam(':mr', $msg_rec_id);
+                $msg_send->bindParam(':mri', $rec_id);
+                $msg_send->bindParam(':gri', $group_rec_id);
+                $msg_send->bindParam(':mid', $msg_id);
+                
+                $msg_send->execute();
+            } catch(PDOException $e) {
+                echo $e;
+            }
             
             $grec_id = $group_query->fetchColumn();
         }

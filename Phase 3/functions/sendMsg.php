@@ -8,15 +8,15 @@
         $pdo = connect();
         
         try {
-            $msg_send = $pdo->prepare("INSERT INTO msg_recipient (msg_rec_id, recipient_id, recipient_group_id, msg_id) VALUES ((SELECT MAX(msg_rec_id) + 1 FROM msg_recipient), ?, ?, ?)");
+            $msg_send = $pdo->prepare('INSERT INTO msg_recipient (msg_rec_id, recipient_id, recipient_group_id, msg_id) VALUES ((SELECT MAX(msg_rec_id) + 1 FROM msg_recipient), :mri, :gri, :mid)');
             
             if (!$msg_send) {
                 echo "Message Send Broke!";
             }
             
-            $msg_send->bindParam(2, $msg_rec_id);
-            $msg_send->bindParam(3, $group_rec_id);
-            $msg_send->bindParam(4, $msg_id);
+            $msg_send->bindParam(':mri', $msg_rec_id);
+            $msg_send->bindParam(':gri', $group_rec_id);
+            $msg_send->bindParam(':mid', $msg_id);
             
             $msg_send->execute();
         } catch(PDOException $e) {
