@@ -17,6 +17,8 @@ session_start();
                 <label for='lastname'>Enter Your Last Name:</label>
                 <input type='text' name='lastname' id='lastname' maxlength="50"/>
                 <input type='submit' name='Submit' value='Submit'/>
+                <br>
+                <input type='submit' name='login' value='Login'/>
             </fieldset>
         </form>
     </body>
@@ -24,8 +26,11 @@ session_start();
 
 <?php
 // Makes sure our html has run
-if(isset($_POST['Submit'])) {
+if(isset($_POST['Submit']) || isset($_POST['login'])) {
     include_once 'test_con.php';
+    
+    if(isset($_POST['login']))
+        header('Location: login.php');
     
     // Connects to the database
     $pdo = connect();

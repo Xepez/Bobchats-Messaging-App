@@ -18,7 +18,7 @@ session_start();
                 <br>
                 <input type='submit' name='updateInfo' value='Update Info'/>
                 <?php
-                    if($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn' || $_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') {
+                    if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
                         echo"<input type='submit' name='deleteUser' value='Delete Users'/>";
                     }
                 ?>
