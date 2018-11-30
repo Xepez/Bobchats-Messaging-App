@@ -8,7 +8,7 @@ session_start();
         <meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8">
     </head>
     <body>
-        <form id='home' action='home.php' method='post' accept-charset='UTF-8'>
+        <form id='category' action='category.php' method='post' accept-charset='UTF-8'>
             <fieldset>
                 <legend>Category Manager</legend>
                 <input type='hidden' name='submitted' id='submitted' value='1'/>

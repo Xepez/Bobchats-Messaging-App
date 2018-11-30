@@ -100,11 +100,6 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
             echo $e;
         }
     }
-    
-    // Redirects User back to Login Page
-    header('Location: deleteUser.php');
-    
-    
-    
+    echo "Deleted!";
 }
 ?>

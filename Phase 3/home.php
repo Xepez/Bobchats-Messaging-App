@@ -25,6 +25,8 @@ session_start();
                 <br>
                 <input type='submit' name='category' value='Manage Categories'/>
                 <br>
+                <input type='submit' name='groups' value='Manage Groups'/>
+                <br>
                 <input type='submit' name='logout' value='Log Out'/>
             </fieldset>
         </form>
@@ -48,7 +50,10 @@ session_start();
     if(isset($_POST['deleteUser'])) {
         header('Location: deleteUser.php');
     }
-    if(isset($_POST['category']) {
+    if(isset($_POST['category'])) {
         header('Location: category.php');
+    }
+    if(isset($_POST['groups'])) {
+        header('Location: groups.php');
     }
 ?>
