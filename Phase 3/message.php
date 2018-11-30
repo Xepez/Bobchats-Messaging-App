@@ -85,20 +85,7 @@ if(isset($_POST['Submit'])) {
     }
     //----------------------------------------^TEMP^----------------------------------------
     
-    // Our Current Message ID
-    $msg_id = 0;
-    try {
-        $msg_id_query = $pdo->prepare("SELECT (MAX(msg_id) +1) FROM message");
-        $msg_id_query->execute();
-        $msg_id = $msg_id_query->fetchColumn();
-    } catch(PDOException $e) {
-        echo $e;
-    }
-    
-    // Drafts our message before sending it
-    draftMsg($msg_id, $subject, $msg, $user_id, $parent_msg_id, $attach_id);
-    
-    // If we are sending msg to a individual user
+    // Gets reciever's id and verifies they exist
     if ($_POST['name'] != null) {
         // Seperates $name = 0 - First name / 1 - Last name
         $flname = explode(" ", $_POST['name']);
@@ -114,10 +101,13 @@ if(isset($_POST['Submit'])) {
             echo $e;
         }
         
-        sendMsg($rec_id, null, $msg_id);
+        if ($rec_id == null) {
+            echo "No User By This Name";
+            return;
+        }
     }
-        
-    // Finds id of msg recpient group
+    
+    // Get ID of group we are messaging
     if ($_POST['group_name'] != null) {
         $gname = trim($_POST['group_name']);
         
@@ -136,6 +126,61 @@ if(isset($_POST['Submit'])) {
             echo $e;
         }
         
+        if ($group_rec_id == null) {
+            echo "No Group By This Name";
+            return;
+        }
+    }
+    
+    // Our Current Message ID
+    $msg_id = 0;
+    try {
+        $msg_id_query = $pdo->prepare("SELECT (MAX(msg_id) +1) FROM message");
+        $msg_id_query->execute();
+        $msg_id = $msg_id_query->fetchColumn();
+    } catch(PDOException $e) {
+        echo $e;
+    }
+    
+    // Drafts our message before sending it
+    //draftMsg($msg_id, $subject, $msg, $user_id, $parent_msg_id, $attach_id);
+    try {
+        $msg_insert = $pdo->prepare("INSERT INTO message (
+                                    msg_id,
+                                    subject,
+                                    message,
+                                    creator_id,
+                                    create_date,
+                                    parent_msg_id,
+                                    attach_id
+                                    ) VALUES (
+                                              ?, ?, ?, ?,
+                                              date('now'), ?, ? )"
+        );
+        
+        if (!$msg_insert) {
+            echo "Message Insert Broke!";
+        }
+        
+        $msg_insert->bindParam(1, $msg_id);
+        $msg_insert->bindParam(2, $subject);
+        $msg_insert->bindParam(3, $msg);
+        $msg_insert->bindParam(4, $user_id);
+        $msg_insert->bindParam(6, $parent_msg_id);
+        $msg_insert->bindParam(7, $attach_id);
+        
+        $msg_insert->execute();
+    } catch(PDOException $e) {
+        echo $e;
+    }
+    
+    // If we are sending msg to a individual user
+    if ($rec_id != null) {
+        sendMsg($rec_id, null, $msg_id);
+    }
+        
+    /// If we are sending msg to a group of users
+    if ($group_rec_id != null) {
         // Finds each member in a group
         try {
             $group_query = $pdo->prepare("SELECT user_id FROM user_group WHERE group_id = ?");

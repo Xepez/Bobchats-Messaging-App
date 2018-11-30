@@ -18,6 +18,8 @@
                 <label for='lastname'>Last Name:</label>
                 <input type='text' name='lastname' id='lastname' maxlength="50"/>
                 <input type='submit' name='Submit' value='Submit'/>
+                <br>
+                <input type='submit' name='new_user' value='New User?'/>
             </fieldset>
         </form>
     </body>
@@ -25,9 +27,14 @@
 
 <?php
 // Makes sure out html has run
-if(isset($_POST['Submit'])) {
+if(isset($_POST['Submit']) or isset($_POST['new_user'])) {
     include 'test_con.php';
 
+    if (isset($_POST['new_user'])) {
+        // If the user needs to add their info to the db
+        header('Location: addUser.php');
+    }
+    
     // Connects to the database
     $pdo = connect();
     
@@ -39,6 +46,7 @@ if(isset($_POST['Submit'])) {
         echo "Last Name is empty!";
         return false;
     }
+    
     $firstname = trim($_POST['firstname']);
     $lastname = trim($_POST['lastname']);
     

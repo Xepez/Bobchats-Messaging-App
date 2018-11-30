@@ -7,6 +7,8 @@
         // Connects to the database
         $pdo = connect();
         
+        echo "MsgID: " . $msg_id . " Subject: " . $subject . " Msg: " . $msg . " User ID: " . $user_id . " Rent Msg ID: " .  $parent_msg_id . " Attach ID: " . $attach_id;
+        
         try {
             $msg_insert = $pdo->prepare("INSERT INTO message (
                                         msg_id,
@@ -31,8 +33,6 @@
             $msg_insert->bindParam(4, $user_id);
             $msg_insert->bindParam(6, $parent_msg_id);
             $msg_insert->bindParam(7, $attach_id);
-            
-            //echo "Set up Message with ID: " . $msg_id . " With msg containing " . $msg;
             
             $msg_insert->execute();
         } catch(PDOException $e) {
