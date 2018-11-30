@@ -13,6 +13,7 @@ session_start();
                 <legend>Group Manager</legend>
                 <input type='hidden' name='submitted' id='submitted' value='1'/>
                 <input type='submit' name='addGroup' value='Add a Group'/>
+                <input type='submit' name='addGroupMembers' value='Add Users to a Group'/>
                 <br>
                 <input type='submit' name='deleteGroup' value='Delete a Group'/>
                 <br>
@@ -37,6 +38,9 @@ if(isset($_POST['updateGroup'])) {
 }
 if(isset($_POST['deleteGroup'])) {
     header('Location: deleteGroup.php');
+}
+if(isset($_POST['addGroupMembers'])) {
+    header('Location: addGroupMembers.php');
 }
 ?>
 

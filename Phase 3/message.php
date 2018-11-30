@@ -147,7 +147,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
         
         if ($rec_id == null) {
             echo "No User By This Name";
-            return;
+            return false;
         }
     }
     

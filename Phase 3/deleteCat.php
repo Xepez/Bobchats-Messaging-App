@@ -14,7 +14,7 @@ session_start();
                 <input type='hidden' name='submitted' id='submitted' value='1'/>
                 <label for='cat_name'>Enter The Category Name:</label>
                 <input type='text' name='cat_name' id='cat_name'maxlength="50"/>
-                <label for='cat_id'> Or Enter The ID:</label>
+                <label for='cat_id'> Or Enter Its ID:</label>
                 <input type='text' name='cat_id' id='cat_id' maxlength="50"/>
                 <input type='submit' name='Submit' value='Submit'/>
                 <br>
@@ -38,8 +38,8 @@ if(isset($_POST['Submit']) || isset($_POST['home']) || isset($_POST['back'])) {
     // Connects to the database
     $pdo = connect();
     
-    if(empty($_POST['cat_name']) && empty($_POST['user_id'])) {
-        echo "Category Name and Category ID is empty!";
+    if(empty($_POST['cat_name']) && empty($_POST['cat_id'])) {
+        echo "Category Name and ID is empty!";
         return false;
     }
     
