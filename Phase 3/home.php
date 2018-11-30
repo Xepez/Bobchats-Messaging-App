@@ -12,20 +12,30 @@ session_start();
             <fieldset>
                 <legend>Welcome! <?php echo $_SESSION['firstname'] . " " . $_SESSION['lastname']; ?> </legend>
                 <input type='hidden' name='submitted' id='submitted' value='1'/>
-                <input type='submit' name='view' value='View Messages'/>
+                <fieldset>
+                    <legend>Messages</legend>
+                    <input type='submit' name='view' value='View Messages'/>
+                    <br>
+                    <input type='submit' name='send' value='Send A Message'/>
+                </fieldset>
                 <br>
-                <input type='submit' name='send' value='Send A Message'/>
+                <fieldset>
+                    <legend>Profile</legend>
+                    <input type='submit' name='updateInfo' value='Update Info'/>
+                    <input type='submit' name='deleteInfo' value='Delete Account'/>
+                </fieldset>
                 <br>
-                <input type='submit' name='updateInfo' value='Update Info'/>
-                <?php
-                    if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
-                        echo"<input type='submit' name='deleteUser' value='Delete Users'/>";
-                    }
-                ?>
-                <br>
-                <input type='submit' name='category' value='Manage Categories'/>
-                <br>
-                <input type='submit' name='groups' value='Manage Groups'/>
+                <fieldset>
+                    <legend>Management</legend>
+                    <?php
+                        if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
+                            echo"<input type='submit' name='deleteUser' value='Delete Users'/><br>";
+                        }
+                    ?>
+                    <input type='submit' name='category' value='Manage Categories'/>
+                    <br>
+                    <input type='submit' name='groups' value='Manage Groups'/>
+                </fieldset>
                 <br>
                 <input type='submit' name='logout' value='Log Out'/>
             </fieldset>
@@ -55,5 +65,8 @@ session_start();
     }
     if(isset($_POST['groups'])) {
         header('Location: groups.php');
+    }
+    if(isset($_POST['deleteInfo'])) {
+        header('Location: deleteInfo.php');
     }
 ?>

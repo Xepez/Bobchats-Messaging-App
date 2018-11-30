@@ -38,11 +38,11 @@ if(isset($_POST['Submit']) || isset($_POST['new_user'])) {
     // Connects to the database
     $pdo = connect();
     
-    if(empty($_POST['firstname'])) {
+    if(empty($_POST['firstname']) || $_POST['firstname'] == '[Deleted]') {
         echo "First Name is empty!";
         return false;
     }
-    if(empty($_POST['lastname'])) {
+    if(empty($_POST['lastname']) || $_POST['lastname'] == '[Deleted]') {
         echo "Last Name is empty!";
         return false;
     }
