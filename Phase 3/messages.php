@@ -79,7 +79,7 @@ try {
 	$result = $messages_query->fetchAll();
 	/* fetch values */
 	echo "
-	<h2>HTML Table</h2>
+	<h2>Recieved Messages</h2>
 	<table>
 		<tr>
 			<th>Date</th>
