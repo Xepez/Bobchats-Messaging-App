@@ -12,19 +12,19 @@ session_start();
             <legend>Bobchats Messaging (Enter an individual user and/or group to send your message to) </legend>
             <input type='hidden' name='submitted' id='submitted' value='1'/>
             <label for='name'>Individual to Message:</label>
-            <input type='text' name='name' id='name' placeholder='<?php echo $_SESSION['reply_user_fname'], " ", $_SESSION['reply_user_lname'] ?>' maxlength="50"/>
+            <input type='text' name='name' id='name' value='<?php if($_SESSION['reply']) echo $_SESSION['reply_user_fname'], " ", $_SESSION['reply_user_lname'] ?>' maxlength="50"/>
             <label for='group_name'>Or Group to Message:</label>
             <input type='text' name='group_name' id='group_name' maxlength="50"/>
             <br> <br>
             <label for='subject'>Subject:</label>
-            <textarea name="subject" form="message" rows="1" cols="20"></textarea>
+            <textarea name="subject" form="message" rows="1" cols="20" value='<?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?>'></textarea>
             <br>
             <label for='attachment'>Attachment:</label>
             <input type="file" name="attachment" maxlength="50" allow="text/*">
             <br>
             <label for='messageBox'>Message:</label>
             <br>
-            <textarea name="messageBox" form="message" rows="5" cols="60">Enter Message Here</textarea>
+            <textarea name="messageBox" form="message" rows="5" cols="60" placeholder = 'Enter Message Here' value='<?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?>'></textarea>
             <input type='submit' name='Submit' value='Submit'/>
             <br>
             <input type='submit' name='home' value='Home'/>
@@ -34,23 +34,23 @@ session_start();
 
 <?php
 // Makes sure out html has run
-if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == true*/) {
+if(isset($_POST['Submit']) || isset($_POST['home'])) {
     include_once 'test_con.php';
     
     if (isset($_POST['home']))
         header('Location: home.php');
 
     // Catchs empty values
-    if (($_SESSION['reply_user_id'] == null && $_POST['name'] == null || $_POST['name'] == '[Deleted] [Deleted]') && $_POST['group_name'] == null) {
+    if (($_SESSION['reply_user_id'] == null && $_SESSION['reply_group_id'] == null && $_POST['name'] == null || $_POST['name'] == '[Deleted] [Deleted]') && $_POST['group_name'] == null) {
         echo "Enter a user to send the message to!";
         return false;
     }
-    if ($_POST['messageBox'] == null) {
-        echo "Enter a message!";
+    if ($_POST['subject'] == null && $_SESSION['forward_subject'] == null) {
+        echo "Enter a subject!";
         return false;
     }
-    if ($_POST['subject'] == null) {
-        echo "Enter a subject!";
+    if ($_POST['messageBox'] == null && $_SESSION['forward_msg'] == null) {
+        echo "Enter a message!";
         return false;
     }
     
@@ -64,43 +64,54 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
     $rec_id = null;
     // Group Reciever ID
     $group_rec_id = null;
-    // The Subject
-    $subject = trim($_POST['subject']);
-    // The Message to Send
-    $msg = $_POST['messageBox'];
     // Parent Message ID
     $parent_msg_id = null;
     // Attach ID
     $attach_id = null;
     
-    
-    // The Parent Message if replying
     // Checks if there is a reply
     if ($_SESSION['reply']) {
         // Sets the parent message id
         $parent_msg_id = $_SESSION['reply_msg_id'];
+        
         // Finds out if we are replying to a user or a group
         if ($_SESSION['reply_user_id'] != null)
             $rec_id = $_SESSION['reply_user_id'];
         elseif ($_SESSION['reply_group_id'] != null)
             $grec_id = $_SESSION['reply_group_id'];
+        
         // Sets reply back to null so we don't accidentally call it again
         $_SESSION['reply'] = false;
+        $_SESSION['reply_msg_id'] = null;
+        $_SESSION['reply_user_id'] = null;
+        $_SESSION['reply_group_id'] = null;
+    }
+    
+    if ($_SESSION['forward']) {
+        // Sets the parent message id
+        $parent_msg_id = $_SESSION['forward_msg_id'];
+        
+        // What we are forwarding
+        $subject = $_SESSION['forward_subject'];
+        $msg = $_SESSION['forward_content'];
+        $attach_id = $_SESSION['forward_attach_id'];
+        
+        // Sets reply back to null so we don't accidentally call it again
+        $_SESSION['forward'] = false;
+        $_SESSION['forward_msg_id'] = null;
+        $_SESSION['forward_subject'] = null;
+        $_SESSION['forward_content'] = null;
+        $_SESSION['forward_attach_id'] = null;
+    }
+    else {
+        // The Subject
+        $subject = trim($_POST['subject']);
+        // The Message to Send
+        $msg = $_POST['messageBox'];
     }
 
-    
-    /*
-     // ON REPLY CLICK
-     $_SESSION['reply'] = true;
-     $_SESSION['reply_msg_id'] = $msg_id;
-     if ($group_recipient_id != null)
-        $_SESSION['reply_group_id'] = $group_recipient_id;
-     elseif($recipient_id != null)
-         $_SESSION['reply_user_id'] = $creator_id;
-     */
-
     // If there is an Attachment
-    if ($_POST['attachment'] != null) {
+    if ($_POST['attachment'] != null && $attach_id == null) {
         // Get our attachment's ID
         try {
             $msg_attach = $pdo->prepare("SELECT (MAX(attach_id) +1) FROM attachment");
@@ -130,8 +141,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
     }
 
     // Gets reciever's id and verifies they exist
-    
-    if ($_POST['name'] != null) {
+    if ($_POST['name'] != null && $parent_msg_id == null) {
         // Seperates $name = 0 - First name / 1 - Last name
         $flname = explode(" ", $_POST['name']);
         
@@ -153,7 +163,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
     }
     
     // Get ID of group we are messaging
-    if ($_POST['group_name'] != null) {
+    if ($_POST['group_name'] != null && $parent_msg_id == null) {
         $gname = trim($_POST['group_name']);
         
         // Get ID of group we are messaging

@@ -17,6 +17,11 @@ session_start();
                     <input type='submit' name='view' value='View Messages'/>
                     <br>
                     <input type='submit' name='send' value='Send A Message'/>
+                    <?php
+                        if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
+                            echo"<input type='submit' name='testAttach' value='Test View Attachments'/><br>";
+                        }
+                    ?>
                 </fieldset>
                 <br>
                 <fieldset>
@@ -45,6 +50,14 @@ session_start();
 
 <?php
 // Makes sure our html has run
+    
+    /*
+     Current Admins are:
+     - Peyton Glynn
+     - Mitchell Kuiper
+     - Florin Rusu
+    */
+    
     if(isset($_POST['view'])) {
         header('Location: messages.php');
     }
@@ -58,6 +71,7 @@ session_start();
         header('Location: login.php');
     }
     if(isset($_POST['deleteUser'])) {
+        // Admins only
         header('Location: deleteUser.php');
     }
     if(isset($_POST['category'])) {
@@ -68,5 +82,9 @@ session_start();
     }
     if(isset($_POST['deleteInfo'])) {
         header('Location: deleteInfo.php');
+    }
+    if(isset($_POST['testAttach'])) {
+        // Admins only
+        header('Location: testViewAttach.php');
     }
 ?>
