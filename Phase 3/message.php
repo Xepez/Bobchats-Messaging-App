@@ -12,7 +12,7 @@ session_start();
             <legend>Bobchats Messaging (Enter an individual user and/or group to send your message to) </legend>
             <input type='hidden' name='submitted' id='submitted' value='1'/>
             <label for='name'>Individual to Message:</label>
-            <input type='text' name='name' id='name' maxlength="50"/>
+            <input type='text' name='name' id='name' placeholder='<?php echo $_SESSION['reply_user_fname'], " ", $_SESSION['reply_user_lname'] ?>' maxlength="50"/>
             <label for='group_name'>Or Group to Message:</label>
             <input type='text' name='group_name' id='group_name' maxlength="50"/>
             <br> <br>
@@ -38,10 +38,10 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
     include_once 'test_con.php';
     
     if (isset($_POST['home']))
-        header('Location: home');
+        header('Location: home.php');
 
     // Catchs empty values
-    if (($_POST['name'] == null || $_POST['name'] == '[Deleted] [Deleted]') && $_POST['group_name'] == null) {
+    if (($_SESSION['reply_user_id'] == null && $_POST['name'] == null || $_POST['name'] == '[Deleted] [Deleted]') && $_POST['group_name'] == null) {
         echo "Enter a user to send the message to!";
         return false;
     }
@@ -73,7 +73,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
     // Attach ID
     $attach_id = null;
     
-    /*
+    
     // The Parent Message if replying
     // Checks if there is a reply
     if ($_SESSION['reply']) {
@@ -87,7 +87,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
         // Sets reply back to null so we don't accidentally call it again
         $_SESSION['reply'] = false;
     }
-    */
+
     
     /*
      // ON REPLY CLICK
@@ -130,6 +130,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) /*|| $_SESSION['reply'] == t
     }
 
     // Gets reciever's id and verifies they exist
+    
     if ($_POST['name'] != null) {
         // Seperates $name = 0 - First name / 1 - Last name
         $flname = explode(" ", $_POST['name']);
