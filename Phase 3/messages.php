@@ -1,6 +1,7 @@
 <?php
 session_start();
 $_SESSION['reply'] = false;
+$_SESSION['forward'] = false;
 ?>
 
 <!DOCTYPE html>
@@ -19,9 +20,6 @@ td, th {
     padding: 8px;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
 
 /* Style the button that is used to open and close the collapsible content */
 .collapsible {
@@ -77,7 +75,7 @@ tr:nth-child(even) {
 
 <?php
 // Echo session variables that were set on previous page
-print_r($_SESSION);
+//print_r($_SESSION);
 $user_id = $_SESSION['userID'];
 $firstname = $_SESSION['firstname'];
 $lastname = $_SESSION['lastname'];
@@ -90,26 +88,45 @@ try {
   $pdo = connect();
   
   if(isset($_POST['Reply'])) {
-    echo print_r($_POST);
+    //echo print_r($_POST);
     $_SESSION['reply'] = true;
-    $_SESSION['reply_msg_id'] = trim($_REQUEST['msg_id'], '/');
-    $_SESSION['reply_user_id'] = trim($_REQUEST['creator_id'], '/');
+    $_SESSION['reply_msg_id'] = trim($_POST['msg_id'], '/');
+    $_SESSION['reply_user_id'] = trim($_POST['creator_id'], '/');
     $_SESSION['reply_user_fname'] = trim($_POST['creator_fname'], '/');
     $_SESSION['reply_user_lname'] = trim($_POST['creator_lname'], '/');
     header('Location: message.php');
   }
   if(isset($_POST['Forward'])) {
-    
+    $_SESSION['forward'] = true;
+    $_SESSION['forward_msg_id'] = trim($_POST['msg_id'], '/');
+    $_SESSION['forward_user_id'] = trim($_POST['creator_id'], '/');
+    $_SESSION['forward_subject'] = trim($_POST['msg_subject'], '/');
+    $_SESSION['forward_content'] = trim($_POST['msg_content'], '/');
+    $_SESSION['forward_attach_id'] = trim($_POST['msg_attach_id'], '/');
+    header('Location: message.php');
   }
   if(isset($_POST['Delete'])) {
-    
+    $msg_id =  trim($_POST['msg_id'], '/');
+    $messages_delete = $pdo->prepare(
+      "UPDATE message
+      SET subject = '[DELETED]', message = '[DELETED]', attach_id = '[DELETED]'
+      WHERE msg_id = ?;");
+    $messages_delete->bindParam(1, $msg_id);
+    $messages_delete->execute();
+  }
+  if(isset($_POST['View_Attachment'])) {
+    $_SESSION['view_attach_id'] = trim($_POST['msg_attach_id'], '/');
+    header('Location: viewAttach.php');
+  }
+  if(isset($_POST['Home'])) {
+    header('Location: home.php');
   }
   
   if(isset($_POST['Search'])) {
     $searchFName = trim($_POST['firstname']);
     $searchLName = trim($_POST['lastname']);
     $searchMessageContent = trim($_POST['messagecontent']);
-    $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id
+    $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id, attach_id
 									FROM msg_recipient
 									INNER JOIN message ON message.msg_id = msg_recipient.msg_id
 									INNER JOIN user sender ON sender.user_id = message.creator_id
@@ -122,11 +139,11 @@ try {
     $messages_query->bindParam(4, $searchMessageContent);
     $messages_query->bindParam(5, $searchMessageContent);
   } elseif (!isset($_POST['Search']) || isset($_POST['Clear'])) {
-    $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id
+    $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id, attach_id
 									FROM msg_recipient
 									INNER JOIN message ON message.msg_id = msg_recipient.msg_id
 									INNER JOIN user sender ON sender.user_id = message.creator_id
-									WHERE recipient_id = ? 
+                  WHERE recipient_id = ? 
 									ORDER BY message.create_date DESC;");
     $messages_query->bindParam(1, $user_id);
   }
@@ -164,10 +181,14 @@ try {
                 <input type='hidden' name='creator_id' value=", $row['user_id'] ,"/>
                 <input type='hidden' name='creator_fname' value=", $row['first_name'] ,"/>
                 <input type='hidden' name='creator_lname' value=", $row['last_name'] ,"/>
+                <input type='hidden' name='msg_subject' value=", $row['subject'] ,"/>
+                <input type='hidden' name='msg_content' value=", $row['message'] ,"/>
+                <input type='hidden' name='msg_attach_id' value=", $row['attach_id'] ,"/>
                 <input type='submit' name='Reply' value='Reply'/>
                 <input type='submit' name='Forward' value='Forward'/>
-                <input type='submit' name='Delete' value='Delete'/>
-            </fieldset>
+                <input type='submit' name='Delete' value='Delete'/>";
+                if ($row['attach_id'] != null) echo "<input type='submit' name='View_Attachment' value='View Attachment'/>";
+            echo "</fieldset>
           </form>
         </td>
       </tr>
@@ -206,5 +227,10 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 </script>
+  <br><br>
+  <form id='buttons' action='message.php' method='post'>
+    <input type='submit' name='home' value='Home'/>
+  </form>
+
 </body>
 </html>
