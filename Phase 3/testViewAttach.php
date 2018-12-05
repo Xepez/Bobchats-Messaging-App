@@ -43,5 +43,14 @@ session_start();
                 echo $e;
             }
         ?>
+        <br>
+        <form id='return_home' action='testViewAttach.php' method='post' accept-charset='UTF-8'>
+            <input type='submit' name='home' value='Home'/>
+        </form>
     </body>
 </html>
+
+<?php
+    if (isset($_POST['home']))
+        header('Location: home.php');
+?>
