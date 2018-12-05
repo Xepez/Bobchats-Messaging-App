@@ -13,6 +13,7 @@ session_start();
                 <legend>Group Manager</legend>
                 <input type='hidden' name='submitted' id='submitted' value='1'/>
                 <input type='submit' name='viewGroup' value='View all Groups'/>
+                <br>
                 <input type='submit' name='addGroup' value='Add a Group'/>
                 <input type='submit' name='addGroupMembers' value='Add Users to a Group'/>
                 <br>
