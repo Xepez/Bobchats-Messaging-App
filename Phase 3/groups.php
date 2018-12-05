@@ -12,6 +12,7 @@ session_start();
             <fieldset>
                 <legend>Group Manager</legend>
                 <input type='hidden' name='submitted' id='submitted' value='1'/>
+                <input type='submit' name='viewGroup' value='View all Groups'/>
                 <input type='submit' name='addGroup' value='Add a Group'/>
                 <input type='submit' name='addGroupMembers' value='Add Users to a Group'/>
                 <br>
@@ -29,6 +30,9 @@ session_start();
 // Makes sure our html has run
 if(isset($_POST['home'])) {
     header('Location: home.php');
+}
+if(isset($_POST['viewGroup'])) {
+    header('Location: viewGroup.php');
 }
 if(isset($_POST['addGroup'])) {
     header('Location: addGroup.php');
