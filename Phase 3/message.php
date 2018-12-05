@@ -17,14 +17,14 @@ session_start();
             <input type='text' name='group_name' id='group_name' maxlength="50"/>
             <br> <br>
             <label for='subject'>Subject:</label>
-            <textarea name="subject" form="message" rows="1" cols="20" value='<?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?>'></textarea>
+            <textarea name="subject" form="message" rows="1" cols="20"><?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?></textarea>
             <br>
             <label for='attachment'>Attachment:</label>
-            <input type="file" name="attachment" maxlength="50" allow="text/*">
+            <textarea name="attachment" form="message" rows="1" cols="20" placeholder='Enter Image URL Here'></textarea>
             <br>
             <label for='messageBox'>Message:</label>
             <br>
-            <textarea name="messageBox" form="message" rows="5" cols="60" placeholder = 'Enter Message Here' value='<?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?>'></textarea>
+            <textarea name="messageBox" form="message" rows="5" cols="60" placeholder='Enter Message Here'><?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?></textarea>
             <input type='submit' name='Submit' value='Submit'/>
             <br>
             <input type='submit' name='home' value='Home'/>
@@ -33,12 +33,33 @@ session_start();
 </html>
 
 <?php
+
+function reply_null() {
+    // Sets reply back to null so we don't accidentally call it again
+    $_SESSION['reply'] = false;
+    $_SESSION['reply_msg_id'] = null;
+    $_SESSION['reply_user_id'] = null;
+    $_SESSION['reply_group_id'] = null;
+}
+
+function forward_null() {
+    // Sets forward back to null so we don't accidentally call it again
+    $_SESSION['forward'] = false;
+    $_SESSION['forward_msg_id'] = null;
+    $_SESSION['forward_subject'] = null;
+    $_SESSION['forward_content'] = null;
+    $_SESSION['forward_attach_id'] = null;
+}
+    
 // Makes sure out html has run
 if(isset($_POST['Submit']) || isset($_POST['home'])) {
     include_once 'test_con.php';
     
-    if (isset($_POST['home']))
+    if (isset($_POST['home'])) {
+        reply_null();
+        forward_null();
         header('Location: home.php');
+    }
 
     // Catchs empty values
     if (($_SESSION['reply_user_id'] == null && $_SESSION['reply_group_id'] == null && $_POST['name'] == null || $_POST['name'] == '[Deleted] [Deleted]') && $_POST['group_name'] == null) {
@@ -79,12 +100,6 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
             $rec_id = $_SESSION['reply_user_id'];
         elseif ($_SESSION['reply_group_id'] != null)
             $grec_id = $_SESSION['reply_group_id'];
-        
-        // Sets reply back to null so we don't accidentally call it again
-        $_SESSION['reply'] = false;
-        $_SESSION['reply_msg_id'] = null;
-        $_SESSION['reply_user_id'] = null;
-        $_SESSION['reply_group_id'] = null;
     }
     
     if ($_SESSION['forward']) {
@@ -95,13 +110,6 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
         $subject = $_SESSION['forward_subject'];
         $msg = $_SESSION['forward_content'];
         $attach_id = $_SESSION['forward_attach_id'];
-        
-        // Sets reply back to null so we don't accidentally call it again
-        $_SESSION['forward'] = false;
-        $_SESSION['forward_msg_id'] = null;
-        $_SESSION['forward_subject'] = null;
-        $_SESSION['forward_content'] = null;
-        $_SESSION['forward_attach_id'] = null;
     }
     else {
         // The Subject
@@ -141,7 +149,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
     }
 
     // Gets reciever's id and verifies they exist
-    if ($_POST['name'] != null && $parent_msg_id == null) {
+    if ($_POST['name'] != null && !($_SESSION['reply'])) {
         // Seperates $name = 0 - First name / 1 - Last name
         $flname = explode(" ", $_POST['name']);
         
@@ -163,7 +171,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
     }
     
     // Get ID of group we are messaging
-    if ($_POST['group_name'] != null && $parent_msg_id == null) {
+    if ($_POST['group_name'] != null && !($_SESSION['reply']) && !($_SESSION['forward'])) {
         $gname = trim($_POST['group_name']);
         
         // Get ID of group we are messaging
@@ -314,5 +322,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
         }
     }
     echo "Sent!";
+    reply_null();
+    forward_null();
 }
 ?>
