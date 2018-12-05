@@ -44,7 +44,7 @@ session_start();
             }
         ?>
         <br>
-        <form id='return_home' action='testViewAttach.php' method='post' accept-charset='UTF-8'>
+        <form id='return_home' action='viewAttach.php' method='post' accept-charset='UTF-8'>
             <input type='submit' name='home' value='Home'/>
         </form>
     </body>
