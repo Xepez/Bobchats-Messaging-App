@@ -1,5 +1,13 @@
 <?php
 session_start();
+    
+    /*
+     
+     if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
+     echo"<input type='submit' name='testAttach' value='Test View Attachments'/><br>";
+     }
+    
+    */
 ?>
 
 <html>
@@ -17,11 +25,6 @@ session_start();
                     <input type='submit' name='view' value='View Messages'/>
                     <br>
                     <input type='submit' name='send' value='Send A Message'/>
-                    <?php
-                        if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
-                            echo"<input type='submit' name='testAttach' value='Test View Attachments'/><br>";
-                        }
-                    ?>
                 </fieldset>
                 <br>
                 <fieldset>

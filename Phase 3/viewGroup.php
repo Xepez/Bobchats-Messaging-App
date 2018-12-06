@@ -12,7 +12,7 @@ session_start();
             <input type='submit' name='home' value='Home'/>
         </form>
         <br>
-        GROUPS:
+        YOUR GROUPS:
         <br>
         <?php
             include_once 'test_con.php';
@@ -20,9 +20,13 @@ session_start();
             // Connects to the database
             $pdo = connect();
             
+            $uid = $_SESSION['userID'];
+            
             try {
-                $group_query = $pdo->prepare("SELECT group_id, group_name FROM groups;");
+                $group_query = $pdo->prepare("SELECT groups.group_id, group_name FROM groups, user_group WHERE groups.group_id = user_group.group_id AND user_id = ?;");
 
+                $group_query->bindParam(1, $uid);
+                
                 $group_query->execute();
                 
                 $result = $group_query->fetchAll();
