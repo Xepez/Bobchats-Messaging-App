@@ -84,7 +84,7 @@ session_start();
         header('Location: groups.php');
     }
     if(isset($_POST['deleteInfo'])) {
-        header('Location: deleteInfo.php');
+        header('Location: confirmation.php');
     }
     if(isset($_POST['testAttach'])) {
         // Admins only

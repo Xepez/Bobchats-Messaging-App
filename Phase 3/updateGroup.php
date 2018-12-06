@@ -16,7 +16,7 @@ session_start();
                 <input type='text' name='group_name' id='group_name' maxlength="50"/>
                 <label for='new_group_name'>Enter The New Group Name:</label>
                 <input type='text' name='new_group_name' id='new_group_name' maxlength="50"/>
-                <label for='cat'>Enter A Category for this:</label>
+                <label for='cat'>Enter A New Category for this (If Needed):</label>
                 <input type='text' name='cat' id='cat' maxlength="50"/>
                 <input type='submit' name='Submit' value='Submit'/>
                 <br>
@@ -108,6 +108,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) || isset($_POST['back'])) {
             echo $e;
         }
     }
+    echo "Updated!";
 }
 ?>
 

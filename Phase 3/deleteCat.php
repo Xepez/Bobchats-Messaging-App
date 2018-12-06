@@ -79,6 +79,20 @@ if(isset($_POST['Submit']) || isset($_POST['home']) || isset($_POST['back'])) {
         } catch(PDOException $e) {
             echo $e;
         }
+        // Deletes Category from groups with that category
+        try {
+            $cat_rm = $pdo->prepare("UPDATE groups SET cat_id = null WHERE cat_id = ?");
+            
+            if (!$cat_rm) {
+                echo "Category Remove from Group Broke";
+            }
+            
+            $cat_rm->bindParam(1, $del_cat_id);
+            
+            $cat_rm->execute();
+        } catch(PDOException $e) {
+            echo $e;
+        }
     }
     echo "Deleted!";
 }

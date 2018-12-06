@@ -14,6 +14,7 @@ session_start();
         <br>
         Categories:
         <br>
+        <br>
         <?php
         include_once 'test_con.php';
 

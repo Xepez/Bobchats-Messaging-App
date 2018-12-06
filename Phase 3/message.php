@@ -70,7 +70,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
         echo "Enter a subject!";
         return false;
     }
-    if ($_POST['messageBox'] == null && $_SESSION['forward_msg'] == null) {
+    if ($_POST['messageBox'] == null && $_SESSION['forward_content'] == null) {
         echo "Enter a message!";
         return false;
     }

@@ -91,6 +91,7 @@ if(isset($_POST['Submit']) || isset($_POST['home']) || isset($_POST['back'])) {
     } catch(PDOException $e) {
         echo $e;
     }
+    echo "Inserted!";
 }
 ?>
 
