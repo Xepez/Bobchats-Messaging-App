@@ -12,6 +12,8 @@ session_start();
             <fieldset>
                 <legend>Category Manager</legend>
                 <input type='hidden' name='submitted' id='submitted' value='1'/>
+                <input type='submit' name='viewCat' value='View all Categories'/>
+                <br>
                 <input type='submit' name='addCat' value='Add a Category'/>
                 <br>
                 <input type='submit' name='deleteCat' value='Delete a Category'/>
@@ -37,6 +39,9 @@ session_start();
     }
     if(isset($_POST['deleteCat'])) {
         header('Location: deleteCat.php');
+    }
+    if(isset($_POST['viewCat'])) {
+        header('Location: viewCat.php');
     }
 ?>
 

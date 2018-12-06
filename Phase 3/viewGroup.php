@@ -23,7 +23,7 @@ session_start();
             $uid = $_SESSION['userID'];
             
             try {
-                $group_query = $pdo->prepare("SELECT groups.group_id, group_name FROM groups, user_group WHERE groups.group_id = user_group.group_id AND user_id = ?;");
+                $group_query = $pdo->prepare("SELECT groups.group_id, group_name, cat_id FROM groups, user_group WHERE groups.group_id = user_group.group_id AND user_id = ?;");
 
                 $group_query->bindParam(1, $uid);
                 
@@ -35,7 +35,25 @@ session_start();
             }
             
             foreach($result as $group) {
-                echo $group["group_name"] . "<br> ---------------------------------------------------- <br>";
+                
+                try {
+                    $cat_query = $pdo->prepare("SELECT DISTINCT c_name FROM category WHERE cat_id = ?;");
+                    
+                    $cat_query->bindParam(1, $group["cat_id"]);
+                    
+                    $cat_query->execute();
+                    
+                    $cat_name = $cat_query->fetchColumn();
+                } catch(PDOException $e) {
+                    echo $e;
+                }
+                
+                if ($cat_name != null) {
+                    echo $group["group_name"] . " (" . $cat_name . ")<br> ---------------------------------------------------- <br>";
+                }
+                else {
+                    echo $group["group_name"] . " (No Category)<br> ---------------------------------------------------- <br>";
+                }
 
                 try {
                     $user_group_query = $pdo->prepare("SELECT user_id FROM user_group WHERE group_id = ?;");
