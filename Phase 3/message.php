@@ -12,8 +12,7 @@ session_start();
             <legend>Bobchats Messaging (Enter an individual user and/or group to send your message to) </legend>
             <input type='hidden' name='submitted' id='submitted' value='1'/>
             <label for='name'>Individual to Message:</label>
-            <input type='text' name='name' id='name' value='
-                <?php 
+            <input type='text' name='name' id='name' value='<?php 
                     if($_SESSION['reply'] && $_SESSION['reply_user_id'] != null) echo $_SESSION['reply_user_fname'], " ", $_SESSION['reply_user_lname'] 
                 ?>' maxlength="50"/>
             <label for='group_name'>Or Group to Message:</label>
