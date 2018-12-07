@@ -23,6 +23,7 @@ session_start();
                 <fieldset>
                     <legend>Messages</legend>
                     <input type='submit' name='view' value='View Messages'/>
+                    <input type='submit' name='viewGrpMsg' value='View Group Messages'/>
                     <br>
                     <input type='submit' name='send' value='Send A Message'/>
                 </fieldset>
@@ -89,5 +90,8 @@ session_start();
     if(isset($_POST['testAttach'])) {
         // Admins only
         header('Location: testViewAttach.php');
+    }
+    if(isset($_POST['viewGrpMsg'])) {
+        header('Location: groupMessages.php');
     }
 ?>
