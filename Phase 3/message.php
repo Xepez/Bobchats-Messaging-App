@@ -1,6 +1,5 @@
 <?php
 session_start();
-echo $_SESSION['reply_group_name'];
 ?>
 
 <html>
