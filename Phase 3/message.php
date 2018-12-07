@@ -1,5 +1,6 @@
 <?php
 session_start();
+echo $_SESSION['reply_group_name'];
 ?>
 
 <html>
@@ -12,9 +13,15 @@ session_start();
             <legend>Bobchats Messaging (Enter an individual user and/or group to send your message to) </legend>
             <input type='hidden' name='submitted' id='submitted' value='1'/>
             <label for='name'>Individual to Message:</label>
-            <input type='text' name='name' id='name' value='<?php if($_SESSION['reply']) echo $_SESSION['reply_user_fname'], " ", $_SESSION['reply_user_lname'] ?>' maxlength="50"/>
+            <input type='text' name='name' id='name' value='
+                <?php 
+                    if($_SESSION['reply'] && $_SESSION['reply_user_id'] != null) echo $_SESSION['reply_user_fname'], " ", $_SESSION['reply_user_lname'] 
+                ?>' maxlength="50"/>
             <label for='group_name'>Or Group to Message:</label>
-            <input type='text' name='group_name' id='group_name' maxlength="50"/>
+            <input type='text' name='group_name' id='group_name' value= 
+                '<?php
+                    if($_SESSION['reply'] && $_SESSION['reply_group_id'] != null) echo $_SESSION['reply_group_name']
+                ?>' maxlength="50"/>
             <br> <br>
             <label for='subject'>Subject:</label>
             <textarea name="subject" form="message" rows="1" cols="20"><?php if($_SESSION['forward']) echo $_SESSION['forward_subject']?></textarea>
@@ -70,7 +77,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
         echo "Enter a subject!";
         return false;
     }
-    if ($_POST['messageBox'] == null && $_SESSION['forward_content'] == null) {
+    if ($_POST['messageBox'] == null && $_SESSION['forward_msg'] == null) {
         echo "Enter a message!";
         return false;
     }
@@ -99,7 +106,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
         if ($_SESSION['reply_user_id'] != null)
             $rec_id = $_SESSION['reply_user_id'];
         elseif ($_SESSION['reply_group_id'] != null)
-            $grec_id = $_SESSION['reply_group_id'];
+            $group_rec_id = $_SESSION['reply_group_id'];
     }
     
     if ($_SESSION['forward']) {
@@ -149,7 +156,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
     }
 
     // Gets reciever's id and verifies they exist
-    if ($_POST['name'] != null && !($_SESSION['reply'])) {
+    if ($_POST['name'] != null && !($_SESSION['reply']) && $_POST['group_name'] == null) {
         // Seperates $name = 0 - First name / 1 - Last name
         $flname = explode(" ", $_POST['name']);
         
@@ -171,7 +178,7 @@ if(isset($_POST['Submit']) || isset($_POST['home'])) {
     }
     
     // Get ID of group we are messaging
-    if ($_POST['group_name'] != null && !($_SESSION['reply']) && !($_SESSION['forward'])) {
+    if ($_POST['group_name'] != null || !($_SESSION['reply']) && !($_SESSION['forward'])) {
         $gname = trim($_POST['group_name']);
         
         // Get ID of group we are messaging

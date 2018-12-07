@@ -38,7 +38,9 @@ td, th {
   padding: 0 18px;
   display: none;
   overflow: hidden;
-  background-color: #f1f1f1;
+  background-color: #DFDFDF;
+  color: #444;
+  cursor: pointer;
 }
 
 /* Style the collapsible content actions. Note: hidden by default */
@@ -49,15 +51,24 @@ td, th {
   background-color: #f1f1f1;
 }
 
+.button {
+  color: #444;
+  cursor: pointer;
+}
+
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .collapsible:hover {
+.active, .activecontent:hover, .content:hover, .collapsible:hover {
   background-color: #ccc;
 }
+.activecontent {
+  background-color: #DFDFDF;
+}
+
 </style>
 </head>
 <body>
 
-  <form id='login' action='messages.php' method='post' accept-charset='UTF-8'>
+  <form id='search' action='messages.php' method='post' accept-charset='UTF-8'>
       <fieldset>
           <legend>Search Messages</legend>
           <input type='hidden' name='submitted' id='submitted' value='1'/>
@@ -65,7 +76,7 @@ td, th {
           <input type='text' name='firstname' id='firstname'maxlength="50"/>
           <label for='lastname'>Last Name:</label>
           <input type='text' name='lastname' id='lastname' maxlength="50"/>
-          <label for='lastname'>Message Content:</label>
+          <label for='messagecontent'>Message Content:</label>
           <input type='text' name='messagecontent' id='messagecontent' maxlength="100"/>
           <input type='submit' name='Search' value='Search'/>
           <input type='submit' name='Clear' value='Clear'/>       
@@ -118,9 +129,6 @@ try {
     $_SESSION['view_attach_id'] = trim($_POST['msg_attach_id'], '/');
     header('Location: viewAttach.php');
   }
-  if(isset($_POST['Home'])) {
-    header('Location: home.php');
-  }
   
   if(isset($_POST['Search'])) {
     $searchFName = trim($_POST['firstname']);
@@ -139,12 +147,12 @@ try {
     $messages_query->bindParam(4, $searchMessageContent);
     $messages_query->bindParam(5, $searchMessageContent);
   } elseif (!isset($_POST['Search']) || isset($_POST['Clear'])) {
-    $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id, attach_id
-									FROM msg_recipient
-									INNER JOIN message ON message.msg_id = msg_recipient.msg_id
-									INNER JOIN user sender ON sender.user_id = message.creator_id
-                  WHERE recipient_id = ? 
-									ORDER BY message.create_date DESC;");
+    
+    $messages_query = $pdo->prepare("SELECT group_name, c_name, user_group.group_id
+    FROM groups
+        INNER JOIN category ON category.cat_id=groups.cat_id
+        INNER JOIN user_group ON user_group.group_id=groups.group_id
+    WHERE user_id = ?");
     $messages_query->bindParam(1, $user_id);
   }
     
@@ -162,13 +170,13 @@ try {
 			<th>Subject</th>
 		</tr>";
 	foreach ( $result as $row ) {
-		echo "
+    echo "
+    <tbody class='msg'>
 			<tr class='collapsible'>
 				<td>", $row['create_date'], "</td>
 				<td>", $row['first_name'], ' ', $row['last_name'], "</td>
 				<td>", $row['subject'], "</td>
-			</tr>
-			
+			</tr>	
 			<tr class='content'>
 				<td colspan='3'>", $row['message'], "</td>
       </tr>
@@ -184,14 +192,15 @@ try {
                 <input type='hidden' name='msg_subject' value=", $row['subject'] ,"/>
                 <input type='hidden' name='msg_content' value=", $row['message'] ,"/>
                 <input type='hidden' name='msg_attach_id' value=", $row['attach_id'] ,"/>
-                <input type='submit' name='Reply' value='Reply'/>
-                <input type='submit' name='Forward' value='Forward'/>
-                <input type='submit' name='Delete' value='Delete'/>";
+                <input class='button' type='submit' name='Reply' value='Reply'/>
+                <input class='button' type='submit' name='Forward' value='Forward'/>
+                <input class='button' type='submit' name='Delete' value='Delete'/>";
                 if ($row['attach_id'] != null) echo "<input type='submit' name='View_Attachment' value='View Attachment'/>";
             echo "</fieldset>
           </form>
         </td>
       </tr>
+    </tbody>
 		";
 	}
 	echo "
@@ -210,6 +219,7 @@ try {
 ?>
 <script>
 var coll = document.getElementsByClassName("collapsible");
+var coll2 = document.getElementsByClassName("content");
 var i;
 
 for (i = 0; i < coll.length; i++) {
@@ -220,15 +230,25 @@ for (i = 0; i < coll.length; i++) {
     if (content.style.display === "table-row") {
       content.style.display = "none";
       actions.style.display = "none";
+      this.parentElement.style.border = "none";
     } else {
       content.style.display = "table-row";
+      this.parentElement.style.border = "2px solid #000000";
+    }
+  });
+  coll2[i].addEventListener("click", function() {
+    this.classList.toggle("activecontent");
+    var actions = this.nextElementSibling;
+    if (actions.style.display === "table-row") {
+      actions.style.display = "none";
+    } else {
       actions.style.display = "table-row";
     }
   });
 }
 </script>
   <br><br>
-  <form id='buttons' action='message.php' method='post'>
+  <form id='buttons' action='home.php' method='post'>
     <input type='submit' name='home' value='Home'/>
   </form>
 
