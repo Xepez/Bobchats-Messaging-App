@@ -148,11 +148,12 @@ try {
     $messages_query->bindParam(5, $searchMessageContent);
   } elseif (!isset($_POST['Search']) || isset($_POST['Clear'])) {
     
-    $messages_query = $pdo->prepare("SELECT group_name, c_name, user_group.group_id
-    FROM groups
-        INNER JOIN category ON category.cat_id=groups.cat_id
-        INNER JOIN user_group ON user_group.group_id=groups.group_id
-    WHERE user_id = ?");
+    $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id, attach_id
+                                    FROM msg_recipient
+                                    INNER JOIN message ON message.msg_id = msg_recipient.msg_id
+                                    INNER JOIN user sender ON sender.user_id = message.creator_id
+                                    WHERE recipient_id = ?
+                                    ORDER BY message.create_date DESC");
     $messages_query->bindParam(1, $user_id);
   }
     
