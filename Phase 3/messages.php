@@ -133,7 +133,7 @@ try {
   if(isset($_POST['Search'])) {
     $searchFName = trim($_POST['firstname']);
     $searchLName = trim($_POST['lastname']);
-    $searchMessageContent = trim($_POST['messagecontent']);
+    $searchMessageContent = "%" . trim($_POST['messagecontent']) . "%";
     $messages_query = $pdo->prepare("SELECT message.create_date, sender.first_name, sender.last_name, subject, message, message.msg_id, sender.user_id, attach_id
 									FROM msg_recipient
 									INNER JOIN message ON message.msg_id = msg_recipient.msg_id
