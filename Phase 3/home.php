@@ -1,14 +1,14 @@
 <?php
-session_start();
+    session_start();
     
     /*
      
      if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
      echo"<input type='submit' name='testAttach' value='Test View Attachments'/><br>";
      }
-    
-    */
-?>
+     
+     */
+    ?>
 
 <html>
     <head>
@@ -26,21 +26,22 @@ session_start();
                     <input type='submit' name='viewGrpMsg' value='View Group Messages'/>
                     <br>
                     <input type='submit' name='send' value='Send A Message'/>
+                    <input type='submit' name='viewSent' value='View Sent Messages'/>
                 </fieldset>
-                <br>
+                    <br>
                 <fieldset>
                     <legend>Profile</legend>
                     <input type='submit' name='updateInfo' value='Update Info'/>
                     <input type='submit' name='deleteInfo' value='Delete Account'/>
                 </fieldset>
-                <br>
-                <fieldset>
+                    <br>
+                    <fieldset>
                     <legend>Management</legend>
                     <?php
                         if(($_SESSION['firstname'] == 'Peyton' && $_SESSION['lastname'] == 'Glynn') || ($_SESSION['firstname'] == 'Mitchell' && $_SESSION['lastname'] == 'Kuiper') || ($_SESSION['firstname'] == 'Florin' && $_SESSION['lastname'] == 'Rusu')) {
                             echo"<input type='submit' name='deleteUser' value='Delete Users'/><br>";
                         }
-                    ?>
+                        ?>
                     <input type='submit' name='category' value='Manage Categories'/>
                     <br>
                     <input type='submit' name='groups' value='Manage Groups'/>
@@ -53,14 +54,14 @@ session_start();
 </html>
 
 <?php
-// Makes sure our html has run
+    // Makes sure our html has run
     
     /*
      Current Admins are:
      - Peyton Glynn
      - Mitchell Kuiper
      - Florin Rusu
-    */
+     */
     
     if(isset($_POST['view'])) {
         header('Location: messages.php');
@@ -93,5 +94,8 @@ session_start();
     }
     if(isset($_POST['viewGrpMsg'])) {
         header('Location: groupMessages.php');
+    }
+    if(isset($_POST['viewSent'])) {
+        header('Location: sentMessages.php');
     }
 ?>
